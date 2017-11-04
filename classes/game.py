@@ -156,7 +156,7 @@ class Person:
         # The following if statement can lead to an infinite loop
         # I have to fix it
         if self.mp < spell.cost or spell.type == "white" and pct>50:
-            self.choose_enemy_spell()
+            return self.choose_enemy_spell()
         else:
             return spell
             #return spell, magic_dmg
