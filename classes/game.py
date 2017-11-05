@@ -148,15 +148,17 @@ class Person:
               + "|" + bcolors.OKBLUE + mp_bar + bcolors.ENDC + "|")
 
     def choose_enemy_spell(self):
-        magic_choice = random.randrange(0, len(self.magic))
-        spell = self.magic[magic_choice]
-        #print(type(spell))
-        #magic_dmg = spell.generate_damage()
         pct = (self.hp / self.max_hp) * 100
-        # The following if statement can lead to an infinite loop
-        # I have to fix it
-        if self.mp < spell.cost or spell.type == "white" and pct>50:
-            self.choose_enemy_spell()
+        spells_to_choose_from = [x for x in self.magic if x.cost <= self.mp]
+        if not spells_to_choose_from:
+            # Not enough mana for anything
+            raise RuntimeError('Oh Fuck!')
+        if pct > 50:
+            non_white_spells = [x for x in spells_to_choose_from if x.type != 'white']
+            if not non_white_spells:
+                # Enough mana only for white spells, but pct > 50 :/
+                raise RuntimeError('Oh Shit!')
+            spell = random.choice([x for x in non_white_spells])
         else:
-            return spell
-            #return spell, magic_dmg
+            spell = random.choice([x for x in spells_to_choose_from])
+        return spell
